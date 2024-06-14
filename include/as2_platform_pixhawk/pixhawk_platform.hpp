@@ -77,17 +77,17 @@ public:
   ~PixhawkPlatform() {}
 
 public:
-  void configureSensors();
+  void configureSensors() override;
   void publishSensorData();
 
   // TODO: set ATTITUDE as default mode with yaw_speed = 0  and Thrust = 0 N
   void setDefaultControlMode() {}
 
-  bool ownSetArmingState(bool state);
-  bool ownSetOffboardControl(bool offboard);
-  bool ownSetPlatformControlMode(const as2_msgs::msg::ControlMode& msg);
+  bool ownSetArmingState(bool state) override;
+  bool ownSetOffboardControl(bool offboard) override;
+  bool ownSetPlatformControlMode(const as2_msgs::msg::ControlMode& msg) override;
   void sendCommand() override;
-  bool ownSendCommand();
+  bool ownSendCommand() override;
   void ownKillSwitch() override;
   void ownStopPlatform() override;
 
