@@ -26,6 +26,20 @@ foreach(DEPENDENCY ${PROJECT_DEPENDENCIES})
   find_package(${DEPENDENCY} REQUIRED)
 endforeach()
 
+if (APPLE)
+  # macOS Sonoma 14.5 aarch64 transitive dependency issue
+  find_package(GeographicLib REQUIRED)
+  find_package(yaml-cpp REQUIRED)
+
+  # assuming yaml-cpp installed with brew
+  if (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+    link_directories("/opt/homebrew/opt/yaml-cpp/lib")
+  elseif (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    link_directories("/usr/local/opt/yaml-cpp/lib")
+  endif()
+
+endif()
+
 include_directories(
   include
   include/${PROJECT_NAME}
@@ -41,6 +55,10 @@ set(SOURCE_CPP_FILES
 add_executable(${PROJECT_NAME}_node src/pixhawk_platform_main.cpp ${SOURCE_CPP_FILES})
 
 ament_target_dependencies(${PROJECT_NAME}_node ${PROJECT_DEPENDENCIES})
+
+target_link_libraries(${PROJECT_NAME}_node
+  GeographicLib::GeographicLib
+)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_cppcheck REQUIRED)
